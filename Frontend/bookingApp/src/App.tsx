@@ -10,6 +10,7 @@ import {
 import Hotel from "./Pages/Hotels/Hotel";
 import LandingPage from "./Pages/LandingPage/LandingPage";
 import HotelAvailability from "./Pages/HotelAvailability/HotelAvailability";
+import Login from "./Pages/Login/Login";
 
 function App() {
   const router = createBrowserRouter(
@@ -18,6 +19,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="hotel" element={<Hotel />} />
         <Route path="/hoteldetail/:id" element={<HotelAvailability />} />
+        <Route path="/login" element={<Login />} />
       </>
     )
   );

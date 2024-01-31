@@ -1,10 +1,12 @@
 import express from "express";
+import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import authRoute from "./routes/auth.js";
 import hotelsRoute from "./routes/hotels.js";
 import userRoute from "./routes/users.js";
 import roomRoute from "./routes/room.js";
+import { setHeaders } from "./Utils/middleware.js";
 const app = express();
 dotenv.config();
 
@@ -21,6 +23,8 @@ mongoose.connection.on("connected", () => console.log("connected"));
 mongoose.connection.on("disconnected", () => console.log("disconnected"));
 
 app.use(express.json());
+app.use(cors());
+app.use(setHeaders);
 // middlewares
 
 app.use("/api/auth", authRoute);
@@ -41,5 +45,4 @@ app.use((err, req, res, next) => {
 
 app.listen(8080, () => {
   connect();
-  console.log("Connected to Backend!");
 });

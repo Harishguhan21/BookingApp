@@ -6,22 +6,35 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FaLocationDot } from "react-icons/fa6";
 import useFetch from "../../Hooks/useFetch";
 import { SearchContext } from "../../Context/SearchContext";
+import { convertNights, getUserDetails } from "../../Utils/ConvertNights";
 
 const HotelAvailability = () => {
+  const [userData, setUserData] = React.useState<any>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const url = location.pathname.split("/") || [];
-  console.log(url[2], "url");
-  console.log(location, "location");
-
   const { data, loading, error }: any = useFetch(
     `http://localhost:8080/api/hotels/find/${url[2] || undefined}`
   );
-  console.log(data, "data from getHotel");
-
   const { value, updateValue }: any = React.useContext(SearchContext);
 
-  console.log(value, "valueContext");
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const storedUserString = localStorage.getItem("token");
+      if (storedUserString) {
+        const token = JSON.parse(storedUserString);
+        if (token) {
+          try {
+            const userDetails = await getUserDetails();
+            setUserData(userDetails);
+          } catch (error) {
+            console.error("Error fetching user details:", error);
+          }
+        }
+      }
+    };
+    fetchData(); // Call the async function
+  }, []);
   return (
     <>
       <div className="px-10 py-4 bg-blue-800 min-h-[30vh]">
@@ -34,14 +47,26 @@ const HotelAvailability = () => {
               lamaBooking
             </h1>
           </div>
-          <div className="">
-            <button className="border px-4 py-2 bg-white text-[#1e40af] rounded-lg">
-              Register
+          {!userData ? (
+            <div className="">
+              <button className="border px-4 py-2 bg-white text-[#1e40af] rounded-lg">
+                Register
+              </button>
+              <button
+                className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
+                onClick={() => navigate("/login")}
+              >
+                Login
+              </button>
+            </div>
+          ) : (
+            <button
+              className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
+              onClick={() => navigate("/login")}
+            >
+              Logout
             </button>
-            <button className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg">
-              Login
-            </button>
-          </div>
+          )}
         </div>
         <div className=" mt-8 flex flex-wrap">
           <div className="flex items-center border py-2 rounded-xl px-2 mx-8">
@@ -108,7 +133,10 @@ const HotelAvailability = () => {
               Excelent loaction score of 9.8
             </p>
             <h1 className="text-3xl py-2">
-              <span className="font-bold text-3xl">Rs:1345</span> (12) Nights
+              <span className="font-bold text-3xl">
+                Rs: {convertNights(value.date[0]) * data.cheapPrice}
+              </span>{" "}
+              {convertNights(value.date[0])} Nights
             </h1>
             <button className="bg-blue-700 w-full py-3 text-white font-bold rounded mt-8">
               Reserve or Book Now!

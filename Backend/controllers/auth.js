@@ -42,8 +42,21 @@ export const login = async (req, res, next) => {
         httpOnly: true,
       })
       .status(200)
-      .json({ ...otherDetails });
+      .json({ token: token });
   } catch (error) {
     next(error);
+  }
+};
+
+export const userDetails = async (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  try {
+    const decodeToken = jwt.verify(token, process.env.JWT);
+    const userData = await User.findById(decodeToken.id);
+    const { password, isAdmin, ...otherData } = userData._doc;
+    res.status(200).json(otherData);
+  } catch (error) {
+    next();
   }
 };

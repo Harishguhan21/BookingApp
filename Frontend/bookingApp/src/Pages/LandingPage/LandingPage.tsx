@@ -10,6 +10,7 @@ import PropertyType from "../../Components/PropertyType/PropertyType";
 import Footer from "../../Components/Footer/Footer";
 import OptionSelector from "../../Components/OptionSelector/OptionSelector";
 import { SearchContext } from "../../Context/SearchContext";
+import { getUserDetails } from "../../Utils/ConvertNights";
 
 const LandingPage = () => {
   const [destination, setDestination] = React.useState("");
@@ -18,6 +19,7 @@ const LandingPage = () => {
   const [children, setChildren] = React.useState<number>(0);
   const [rooms, setRooms] = React.useState<number>(0);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [userData, setUserData] = React.useState<any>(null);
   const { value, updateValue }: any = React.useContext(SearchContext);
   const navigate = useNavigate();
   const handleDestinationChange = (e: any) => {
@@ -82,6 +84,23 @@ const LandingPage = () => {
     });
   };
 
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const storedUserString = localStorage.getItem("token");
+      if (storedUserString) {
+        const token = JSON.parse(storedUserString);
+        if (token) {
+          try {
+            const userDetails = await getUserDetails();
+            setUserData(userDetails);
+          } catch (error) {
+            console.error("Error fetching user details:", error);
+          }
+        }
+      }
+    };
+    fetchData(); // Call the async function
+  }, []);
   return (
     <>
       <div className="px-10 py-4 bg-blue-800 min-h-[50vh]">
@@ -89,14 +108,26 @@ const LandingPage = () => {
           <div className="">
             <h1 className="text-white font-bold text-2xl">lamaBooking</h1>
           </div>
-          <div className="">
-            <button className="border px-4 py-2 bg-white text-[#1e40af] rounded-lg">
-              Register
+          {!userData ? (
+            <div className="">
+              <button className="border px-4 py-2 bg-white text-[#1e40af] rounded-lg">
+                Register
+              </button>
+              <button
+                className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
+                onClick={() => navigate("/login")}
+              >
+                Login
+              </button>
+            </div>
+          ) : (
+            <button
+              className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
+              onClick={() => navigate("/login")}
+            >
+              Logout
             </button>
-            <button className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg">
-              Login
-            </button>
-          </div>
+          )}
         </div>
         <div className=" mt-8 flex">
           <div className="flex items-center border py-2 rounded-xl px-2 mx-8">

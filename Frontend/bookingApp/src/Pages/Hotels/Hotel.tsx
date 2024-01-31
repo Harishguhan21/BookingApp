@@ -5,9 +5,11 @@ import { RiFlightTakeoffLine } from "react-icons/ri";
 import { useLocation, useNavigate } from "react-router-dom";
 import HotelCard from "../../Components/HotelCard/HotelCard";
 import useFetch from "../../Hooks/useFetch";
+import { getUserDetails } from "../../Utils/ConvertNights";
 
 const Hotel = () => {
   const [destination, setDestination] = React.useState<any>("");
+  const [userData, setUserData] = React.useState<any>(null);
   const [min, setMin] = React.useState<any>(0);
   const [max, setMax] = React.useState<any>(15000);
   const location = useLocation();
@@ -19,6 +21,24 @@ const Hotel = () => {
   const { data, loading, error, refetch }: any = useFetch(
     `http://localhost:8080/api/hotels/getBySearch?city=${destination}&min=${min}&max=${max}`
   );
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const storedUserString = localStorage.getItem("token");
+      if (storedUserString) {
+        const token = JSON.parse(storedUserString);
+        if (token) {
+          try {
+            const userDetails = await getUserDetails();
+            setUserData(userDetails);
+          } catch (error) {
+            console.error("Error fetching user details:", error);
+          }
+        }
+      }
+    };
+    fetchData(); // Call the async function
+  }, []);
 
   return (
     <>
@@ -32,14 +52,26 @@ const Hotel = () => {
               lamaBooking
             </h1>
           </div>
-          <div className="">
-            <button className="border px-4 py-2 bg-white text-[#1e40af] rounded-lg">
-              Register
+          {!userData ? (
+            <div className="">
+              <button className="border px-4 py-2 bg-white text-[#1e40af] rounded-lg">
+                Register
+              </button>
+              <button
+                className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
+                onClick={() => navigate("/login")}
+              >
+                Login
+              </button>
+            </div>
+          ) : (
+            <button
+              className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
+              onClick={() => navigate("/login")}
+            >
+              Logout
             </button>
-            <button className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg">
-              Login
-            </button>
-          </div>
+          )}
         </div>
         <div className=" mt-8 flex flex-wrap">
           <div className="flex items-center border py-2 rounded-xl px-2 mx-8">
