@@ -4,6 +4,7 @@ import {
   deleteHotel,
   getAllHotel,
   getByCity,
+  getBySearch,
   getByType,
   getHotel,
   updateHotel,
@@ -15,7 +16,7 @@ const router = express.Router();
 
 // GET
 
-router.get("/find/:id", verifyUser, getHotel);
+router.get("/find/:id", getHotel);
 
 // GET ALL
 
@@ -38,5 +39,7 @@ router.delete("/:id", verifyAdmin, deleteHotel);
 router.get("/getByCity", getByCity);
 
 router.get("/getByType", getByType);
+
+router.get("/getBySearch",getBySearch)
 
 export default router;

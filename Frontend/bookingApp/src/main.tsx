@@ -7,11 +7,14 @@ import App from "./App";
 // import "primeflex/primeflex.css"; // flex
 import "primereact/resources/themes/lara-light-indigo/theme.css"; //theme
 import "primereact/resources/primereact.min.css"; //core css
+import SearchContextProvider from "./Context/SearchContext";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <PrimeReactProvider>
-      <App />
-    </PrimeReactProvider>
+    <SearchContextProvider>
+      <PrimeReactProvider>
+        <App />
+      </PrimeReactProvider>
+    </SearchContextProvider>
   </React.StrictMode>
 );

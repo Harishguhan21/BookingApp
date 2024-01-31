@@ -8,21 +8,30 @@ import "flatpickr/dist/themes/light.css";
 import useFetch from "../../Hooks/useFetch";
 import PropertyType from "../../Components/PropertyType/PropertyType";
 import Footer from "../../Components/Footer/Footer";
+import OptionSelector from "../../Components/OptionSelector/OptionSelector";
+import { SearchContext } from "../../Context/SearchContext";
 
 const LandingPage = () => {
   const [destination, setDestination] = React.useState("");
   const [date, setDate] = React.useState("");
-  const [guests, setGuests] = React.useState("");
+  const [adults, setAdults] = React.useState<number>(0);
+  const [children, setChildren] = React.useState<number>(0);
+  const [rooms, setRooms] = React.useState<number>(0);
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const { value, updateValue }: any = React.useContext(SearchContext);
   const navigate = useNavigate();
   const handleDestinationChange = (e: any) => {
     setDestination(e.target.value);
   };
-  const handleDateChange = (e: any) => {
-    setDate(e.target.value);
+
+  const handleIncrement = (setter: any) => {
+    setter((prevCount: number) => prevCount + 1);
   };
-  const handleGuestsChange = (e: any) => {
-    setGuests(e.target.value);
+
+  const handleDecrement = (setter: any) => {
+    setter((prevCount: number) => (prevCount > 0 ? prevCount - 1 : 0));
   };
+
   const images = [
     "https://images.unsplash.com/photo-1617170220968-1ea3bceb3209?q=80&w=2067&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "https://images.unsplash.com/photo-1561784493-88b0a3ce0c76?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -32,8 +41,6 @@ const LandingPage = () => {
   const { data, loading, error }: any = useFetch(
     "http://localhost:8080/api/hotels/getByCity?cities=Chennai,Trichy,Coimbatore"
   );
-
-  console.log(data[0], "data");
 
   const locationData = [
     {
@@ -50,7 +57,31 @@ const LandingPage = () => {
     },
   ];
 
-  console.log(locationData, "locationData");
+  const handleOpenMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleSearch = () => {
+    const searchData = {
+      city: destination,
+      date: [date],
+      options: {
+        adults: adults,
+        children: children,
+        room: rooms,
+      },
+    };
+    updateValue(searchData);
+    navigate("/hotel", {
+      state: {
+        searchQuery: {
+          destination: destination,
+          date: date,
+        },
+      },
+    });
+  };
+
   return (
     <>
       <div className="px-10 py-4 bg-blue-800 min-h-[50vh]">
@@ -131,20 +162,44 @@ const LandingPage = () => {
           />
         </div>
 
-        <div className="flex items-center space-x-2 w-[30%]">
+        <div className="flex items-center space-x-2 w-[30%] relative">
           <label htmlFor="guests" className="text-gray-500">
             Guests
           </label>
-          <select
-            id="guests"
-            value={guests}
-            onChange={handleGuestsChange}
-            className="border-2 border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-blue-500"
-          >
-            <option value="adults">Adults</option>
-            <option value="children">Children</option>
-          </select>
+
+          <p onClick={handleOpenMenu}>
+            {adults} adults . {children} children . {rooms} room
+          </p>
+          {isMenuOpen && (
+            <div className="max-w-md mx-auto p-4 absolute bg-white rounded-lg top-8 left-20">
+              <OptionSelector
+                label="Adults"
+                count={adults}
+                onIncrement={() => handleIncrement(setAdults)}
+                onDecrement={() => handleDecrement(setAdults)}
+              />
+              <OptionSelector
+                label="Children"
+                count={children}
+                onIncrement={() => handleIncrement(setChildren)}
+                onDecrement={() => handleDecrement(setChildren)}
+              />
+              <OptionSelector
+                label="Rooms"
+                count={rooms}
+                onIncrement={() => handleIncrement(setRooms)}
+                onDecrement={() => handleDecrement(setRooms)}
+              />
+            </div>
+          )}
         </div>
+
+        <button
+          className="bg-blue-800 text-white px-4 py-2 rounded"
+          onClick={handleSearch}
+        >
+          Search
+        </button>
       </div>
 
       <div className="flex flex-wrap justify-center mt-5">

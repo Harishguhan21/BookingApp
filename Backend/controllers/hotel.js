@@ -77,6 +77,22 @@ export const getByCity = async (req, res, next) => {
   }
 };
 
+export const getBySearch = async (req, res, next) => {
+  const { city, min, max } = req.query;
+  const minPrice = parseInt(min, 10) || 0;
+  const maxPrice = parseInt(max, 10) || Number.MAX_SAFE_INTEGER;
+  try {
+    const hotelList = await Hotel.find({
+      city: { $regex: new RegExp(city, "i") },
+      cheapPrice: { $gte: minPrice, $lte: maxPrice },
+    });
+
+    res.status(200).json(hotelList);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getByType = async (req, res, next) => {
   try {
     const hotelCount = await Hotel.countDocuments({ type: "hotel" });
