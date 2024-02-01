@@ -7,9 +7,13 @@ import { FaLocationDot } from "react-icons/fa6";
 import useFetch from "../../Hooks/useFetch";
 import { SearchContext } from "../../Context/SearchContext";
 import { convertNights, getUserDetails } from "../../Utils/ConvertNights";
+import { Dialog } from "primereact/dialog";
+import axios from "axios";
 
 const HotelAvailability = () => {
   const [userData, setUserData] = React.useState<any>(null);
+  const [visible, setVisible] = React.useState<boolean>(false);
+  const [roomsDetails, setRoomDetails] = React.useState<any>([]);
   const location = useLocation();
   const navigate = useNavigate();
   const url = location.pathname.split("/") || [];
@@ -35,6 +39,21 @@ const HotelAvailability = () => {
     };
     fetchData(); // Call the async function
   }, []);
+
+  const handleBookRoom = async () => {
+    setVisible(true);
+
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/api/hotels/getRooms/${data._id}`
+      );
+      setRoomDetails(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  console.log(roomsDetails, "roomDetails");
   return (
     <>
       <div className="px-10 py-4 bg-blue-800 min-h-[30vh]">
@@ -95,10 +114,10 @@ const HotelAvailability = () => {
       <div className="mx-10 my-6">
         <div className="flex justify-between w-100">
           <div className="">
-            <h1 className="font-bold text-4xl ">Tower Street Apartment's</h1>
+            <h1 className="font-bold text-4xl ">{data?.title}</h1>
             <div className="flex place-items-baseline">
               <FaLocationDot className="mt-5" />
-              <h1 className="mt-5 mx-2">Eltron Street, 125 New york</h1>
+              <h1 className="mt-5 mx-2">{data?.address}</h1>
             </div>
           </div>
 
@@ -110,7 +129,7 @@ const HotelAvailability = () => {
         </div>
 
         <p className="mt-5 text-blue-500">
-          Excelent location - 500m from center
+          Excelent location - {data?.distence}m from center
         </p>
         <p className="mt-5 text-green-500">
           Book a stay over $114 at this property and get a free airport taxi
@@ -119,8 +138,8 @@ const HotelAvailability = () => {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mx-10 my-6 mt-10">
         <div className="md:col-span-9">
           <div className="">
-            <h1 className="text-4xl font-bold ">Best Hotel in the City</h1>
-            <p className="mt-6">Hotel Description</p>
+            <h1 className="text-4xl font-bold ">{data?.name}</h1>
+            <p className="mt-6">{data?.description}</p>
           </div>
         </div>
         <div className="border md:col-span-3 rounded-2xl bg-blue-300">
@@ -134,15 +153,58 @@ const HotelAvailability = () => {
             </p>
             <h1 className="text-3xl py-2">
               <span className="font-bold text-3xl">
-                Rs: {convertNights(value.date[0]) * data.cheapPrice}
+                {/* Rs: {convertNights(value?.date[0]) * data && data?.cheapPrice} */}
               </span>{" "}
-              {convertNights(value.date[0])} Nights
+              {value?.date && value?.date.length > 0 ? (
+                <>{convertNights(value?.date[0])}</>
+              ) : (
+                0
+              )}
+              Nights
             </h1>
-            <button className="bg-blue-700 w-full py-3 text-white font-bold rounded mt-8">
+            <button
+              className="bg-blue-700 w-full py-3 text-white font-bold rounded mt-8"
+              onClick={handleBookRoom}
+            >
               Reserve or Book Now!
             </button>
           </div>
         </div>
+      </div>
+
+      <div className="card flex justify-content-center">
+        <Dialog
+          header="Book Rooms"
+          visible={visible}
+          onHide={() => setVisible(false)}
+          style={{ width: "50vw" }}
+          breakpoints={{ "960px": "75vw", "641px": "100vw" }}
+        >
+          <p className="m-0">Select Your Rooms: </p>
+
+          {roomsDetails &&
+            roomsDetails.map((item: any) => {
+              return (
+                <div className="flex justify-between border m-4 p-5">
+                  <div className="">
+                    <h1 className="font-bold text-xl">{item.title}</h1>
+                    <p>{item.description}</p>
+                    <p>Max People: {item.maxPeople}</p>
+                  </div>
+                  <div className="">
+                    {roomsDetails?.roomNumbers?.map((item: any) => {
+                      return (
+                        <div className="flex">
+                          <label htmlFor=""></label>
+                          <input type="checkbox" />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+        </Dialog>
       </div>
     </>
   );

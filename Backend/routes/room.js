@@ -19,7 +19,7 @@ router.get("/:id", verifyAdmin, getRoom);
 
 // UPDATE ROOM
 
-router.put("/:id", verifyAdmin, updateRoom);
+router.put("/:id", updateRoom);
 
 // DELETE ROOM
 

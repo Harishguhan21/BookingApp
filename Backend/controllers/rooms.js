@@ -65,3 +65,18 @@ export const deleteRoom = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getHotelRooms = async (req, res, next) => {
+  try {
+    const hotel = await Hotel.findById(req.params.id);
+    const list = await Promise.all(
+      hotel.rooms.map((item) => {
+        return room.findById(item);
+      })
+    );
+    console.log(list[2],"list")
+    res.status(200).json(list);
+  } catch (error) {
+    next(error);
+  }
+};
