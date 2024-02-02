@@ -11,6 +11,15 @@ import Footer from "../../Components/Footer/Footer";
 import OptionSelector from "../../Components/OptionSelector/OptionSelector";
 import { SearchContext } from "../../Context/SearchContext";
 import { getUserDetails } from "../../Utils/ConvertNights";
+import { useForm, SubmitHandler } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+const schema: any = yup
+  .object({
+    destination: yup.string().required(),
+  })
+  .required();
 
 const LandingPage = () => {
   const [destination, setDestination] = React.useState("");
@@ -20,6 +29,7 @@ const LandingPage = () => {
   const [rooms, setRooms] = React.useState<number>(0);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [userData, setUserData] = React.useState<any>(null);
+  const [dateError, setDateError] = React.useState("");
   const { value, updateValue }: any = React.useContext(SearchContext);
   const navigate = useNavigate();
   const handleDestinationChange = (e: any) => {
@@ -34,6 +44,15 @@ const LandingPage = () => {
     setter((prevCount: number) => (prevCount > 0 ? prevCount - 1 : 0));
   };
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  }: any = useForm<any>({
+    resolver: yupResolver(schema),
+  });
+
+  console.log(date, "datefromlanding");
   const images = [
     "https://images.unsplash.com/photo-1617170220968-1ea3bceb3209?q=80&w=2067&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "https://images.unsplash.com/photo-1561784493-88b0a3ce0c76?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -59,30 +78,12 @@ const LandingPage = () => {
     },
   ];
 
+  console.log("formErrors:::", errors);
   const handleOpenMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleSearch = () => {
-    const searchData = {
-      city: destination,
-      date: [date],
-      options: {
-        adults: adults,
-        children: children,
-        room: rooms,
-      },
-    };
-    updateValue(searchData);
-    navigate("/hotel", {
-      state: {
-        searchQuery: {
-          destination: destination,
-          date: date,
-        },
-      },
-    });
-  };
+  const handleSearch = () => {};
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -101,6 +102,33 @@ const LandingPage = () => {
     };
     fetchData(); // Call the async function
   }, []);
+
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    console.log(data, "formData");
+    if (date) {
+      const searchData = {
+        city: destination,
+        date: [date],
+        options: {
+          adults: adults,
+          children: children,
+          room: rooms,
+        },
+      };
+      updateValue(searchData);
+      navigate("/hotel", {
+        state: {
+          searchQuery: {
+            destination: destination,
+            date: date,
+          },
+        },
+      });
+    } else {
+      setDateError("Date field is required!");
+    }
+  };
+
   return (
     <>
       <div className="px-10 py-4 bg-blue-800 min-h-[50vh]">
@@ -129,24 +157,24 @@ const LandingPage = () => {
             </button>
           )}
         </div>
-        <div className=" mt-8 flex">
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8">
+        <div className=" mt-8 flex flex-wrap">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2">
             <FaBed className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Stays</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2">
             <RiFlightTakeoffLine className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Flights</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2">
             <FaCarRear className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Car rentals</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2">
             <FaBed className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Attractions</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2">
             <FaTaxi className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Airport Taxis</h1>
           </div>
@@ -165,74 +193,82 @@ const LandingPage = () => {
           </button>
         </div>
       </div>
-
-      <div className="flex space-x-2 w-100 border mx-20 py-2 -mt-8 px-3 bg-white rounded">
-        <div className="flex items-center space-x-2 w-[30%]">
-          <label htmlFor="destination" className="text-gray-500">
-            <FaMapMarkerAlt />
-          </label>
-          <input
-            type="text"
-            id="destination"
-            placeholder="Where are you going?"
-            value={destination}
-            onChange={handleDestinationChange}
-            className="border-none px-3 py-2 rounded-md w-64 focus:outline-none focus:border-blue-500"
-          />
-        </div>
-
-        <div className="flex items-center space-x-2 w-[30%]">
-          <Flatpickr
-            options={{
-              mode: "range",
-              dateFormat: "d-m-Y",
-            }}
-            onChange={(range: any) => setDate(range)}
-            className="h-[37px] -mt-[5px] w-100 border focus:outline-none focus:border-none focus:ring-2 focus:ring-blue-600 border-gray-300 mr-5 p-2 rounded-md"
-            placeholder="Choose the date"
-          />
-        </div>
-
-        <div className="flex items-center space-x-2 w-[30%] relative">
-          <label htmlFor="guests" className="text-gray-500">
-            Guests
-          </label>
-
-          <p onClick={handleOpenMenu}>
-            {adults} adults . {children} children . {rooms} room
-          </p>
-          {isMenuOpen && (
-            <div className="max-w-md mx-auto p-4 absolute bg-white rounded-lg top-8 left-20">
-              <OptionSelector
-                label="Adults"
-                count={adults}
-                onIncrement={() => handleIncrement(setAdults)}
-                onDecrement={() => handleDecrement(setAdults)}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex flex-col border py-2 px-3 h-20 bg-white rounded md:flex-row md:mx-20 md:-mt-8">
+          <div className="flex items-center space-x-2 w-full md:w-[30%] mb-3 md:mb-0">
+            <label htmlFor="destination" className="text-gray-500">
+              <FaMapMarkerAlt />
+            </label>
+            <div className="flex flex-col">
+              <input
+                type="text"
+                id="destination"
+                placeholder="Where are you going?"
+                value={destination}
+                {...register("destination")}
+                onChange={handleDestinationChange}
+                className="border-none px-3 py-2 rounded-md w-full focus:outline-none focus:border-blue-500"
               />
-              <OptionSelector
-                label="Children"
-                count={children}
-                onIncrement={() => handleIncrement(setChildren)}
-                onDecrement={() => handleDecrement(setChildren)}
-              />
-              <OptionSelector
-                label="Rooms"
-                count={rooms}
-                onIncrement={() => handleIncrement(setRooms)}
-                onDecrement={() => handleDecrement(setRooms)}
-              />
+              <p className="text-red-600">{errors.destination?.message}</p>
             </div>
-          )}
+          </div>
+          <div className="flex items-center space-x-2 w-full md:w-[30%] mb-3 md:mb-0">
+            <Flatpickr
+              options={{
+                mode: "range",
+                dateFormat: "d-m-Y",
+              }}
+              {...register("date")}
+              onChange={(range: any) => {
+                setDate(range);
+                setDateError("");
+              }}
+              className="h-10 md:h-[37px] w-full border focus:outline-none focus:border-none focus:ring-2 focus:ring-blue-600 border-gray-300 p-2 rounded-md"
+              placeholder="Choose the date"
+            />
+            <p className="text-red-600">{dateError}</p>
+          </div>
+
+          <div className="flex items-center space-x-2 w-full md:w-[30%] relative mb-3 md:mb-0">
+            <label htmlFor="guests" className="text-gray-500 ml-3">
+              Guests
+            </label>
+
+            <p onClick={handleOpenMenu} className="text-sm md:text-base">
+              {adults} adults . {children} children . {rooms} room
+            </p>
+            {isMenuOpen && (
+              <div className="max-w-md mx-auto p-2 md:p-4 absolute bg-white rounded-lg top-10 left-0 md:left-20">
+                <OptionSelector
+                  label="Adults"
+                  count={adults}
+                  onIncrement={() => handleIncrement(setAdults)}
+                  onDecrement={() => handleDecrement(setAdults)}
+                />
+                <OptionSelector
+                  label="Children"
+                  count={children}
+                  onIncrement={() => handleIncrement(setChildren)}
+                  onDecrement={() => handleDecrement(setChildren)}
+                />
+                <OptionSelector
+                  label="Rooms"
+                  count={rooms}
+                  onIncrement={() => handleIncrement(setRooms)}
+                  onDecrement={() => handleDecrement(setRooms)}
+                />
+              </div>
+            )}
+          </div>
+
+          <button
+            className="bg-blue-800 text-white px-4 py-2 rounded w-full md:w-auto"
+            onClick={handleSearch}
+          >
+            Search
+          </button>
         </div>
-
-        <button
-          className="bg-blue-800 text-white px-4 py-2 rounded"
-          onClick={handleSearch}
-        >
-          Search
-        </button>
-      </div>
-
+      </form>
       <div className="flex flex-wrap justify-center mt-5">
         {locationData.map((item: any, index: any) => {
           return (

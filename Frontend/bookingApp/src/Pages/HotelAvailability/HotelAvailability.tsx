@@ -14,6 +14,7 @@ const HotelAvailability = () => {
   const [userData, setUserData] = React.useState<any>(null);
   const [visible, setVisible] = React.useState<boolean>(false);
   const [roomsDetails, setRoomDetails] = React.useState<any>([]);
+  const [selectedRooms, setSelectedRooms] = React.useState<any>([]);
   const location = useLocation();
   const navigate = useNavigate();
   const url = location.pathname.split("/") || [];
@@ -42,7 +43,7 @@ const HotelAvailability = () => {
 
   const handleBookRoom = async () => {
     setVisible(true);
-
+    console.log(value.date);
     try {
       const res = await axios.get(
         `http://localhost:8080/api/hotels/getRooms/${data._id}`
@@ -53,7 +54,68 @@ const HotelAvailability = () => {
     }
   };
 
-  console.log(roomsDetails, "roomDetails");
+  const handleSelect = (e: any) => {
+    const checked = e.target.checked;
+    const value = e.target.value;
+    setSelectedRooms(
+      checked
+        ? [...selectedRooms, value]
+        : selectedRooms.filter((item: any) => item !== value)
+    );
+  };
+
+  const handleClosePopup = () => {
+    setVisible(false);
+    setSelectedRooms([]);
+  };
+
+  const bookedDates: any =
+    value?.date && Array.isArray(value.date) && value.date.length > 0
+      ? getDatesInRange(value.date[0])
+      : [];
+  function getDatesInRange(date: any) {
+    const start = new Date(date[0]);
+    const end = new Date(date[1]);
+    console.log(start, "start", end);
+    // const dateValue = new Date(start);
+    const dates = [];
+    while (start <= new Date(end)) {
+      dates.push(new Date(start));
+      start.setDate(start.getDate() + 1);
+    }
+    console.log(dates, "rangeDates");
+    return dates;
+  }
+
+  const handleBooking = async () => {
+    console.log(value.date.flat(1), "value.date?");
+    try {
+      await Promise.all(
+        selectedRooms.map((roomId: any) => {
+          const res: any = axios.put(
+            `http://localhost:8080/api/rooms/availability/${roomId}`,
+            { dates: value.date.flat(1) }
+          );
+        })
+      );
+      navigate("/");
+    } catch (error) {}
+  };
+
+  const isAvailable = (roomNumber: any) => {
+    const isFoundDate = roomNumber.unavailableDates.some((dateToCheck: any) => {
+      return bookedDates.some((date: any) => {
+        const isEqual =
+          date.toDateString() === new Date(dateToCheck).toDateString();
+        console.log(isEqual, "finaltest");
+        return isEqual; // Return the result of the comparison
+      });
+    });
+
+    console.log(isFoundDate, "isFoundDate");
+    return !isFoundDate;
+  };
+
   return (
     <>
       <div className="px-10 py-4 bg-blue-800 min-h-[30vh]">
@@ -120,14 +182,12 @@ const HotelAvailability = () => {
               <h1 className="mt-5 mx-2">{data?.address}</h1>
             </div>
           </div>
-
           <div className="">
             <div className="px-4 py-3 cursor-pointer rounded-lg font-bold text-white bg-blue-900">
               Reserve Or book Now!
             </div>
           </div>
         </div>
-
         <p className="mt-5 text-blue-500">
           Excelent location - {data?.distence}m from center
         </p>
@@ -158,8 +218,8 @@ const HotelAvailability = () => {
               {value?.date && value?.date.length > 0 ? (
                 <>{convertNights(value?.date[0])}</>
               ) : (
-                0
-              )}
+                1
+              )}{" "}
               Nights
             </h1>
             <button
@@ -176,12 +236,11 @@ const HotelAvailability = () => {
         <Dialog
           header="Book Rooms"
           visible={visible}
-          onHide={() => setVisible(false)}
+          onHide={handleClosePopup}
           style={{ width: "50vw" }}
           breakpoints={{ "960px": "75vw", "641px": "100vw" }}
         >
           <p className="m-0">Select Your Rooms: </p>
-
           {roomsDetails &&
             roomsDetails.map((item: any) => {
               return (
@@ -192,11 +251,17 @@ const HotelAvailability = () => {
                     <p>Max People: {item.maxPeople}</p>
                   </div>
                   <div className="">
-                    {roomsDetails?.roomNumbers?.map((item: any) => {
+                    {item?.roomNumbers?.map((item: any) => {
                       return (
-                        <div className="flex">
-                          <label htmlFor=""></label>
-                          <input type="checkbox" />
+                        <div className="flex justify-center items-center">
+                          <p className="mx-2">{item.number}</p>
+                          <input
+                            type="checkbox"
+                            value={item?._id}
+                            className=""
+                            onChange={handleSelect}
+                            disabled={!isAvailable(item)}
+                          />
                         </div>
                       );
                     })}
@@ -204,6 +269,12 @@ const HotelAvailability = () => {
                 </div>
               );
             })}
+          <button
+            className="px-20 bg-blue-700 py-3 mx-auto flex justify-center items-center text-white font-bold rounded"
+            onClick={handleBooking}
+          >
+            Book Now
+          </button>
         </Dialog>
       </div>
     </>
