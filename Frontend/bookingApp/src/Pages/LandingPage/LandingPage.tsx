@@ -16,6 +16,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import LoginModal from "../../Components/LoginModal/LoginModal";
 import { clearAll } from "../../Utils/auth";
+import SignUpModal from "../../Components/SignUpModal/SignUpModal";
 
 const schema: any = yup
   .object({
@@ -34,6 +35,7 @@ const LandingPage = () => {
   const [dateError, setDateError] = React.useState("");
   const { value, updateValue }: any = React.useContext(SearchContext);
   const [loginModal, setLoginModal] = React.useState(false);
+  const [signModal, setSignModal] = React.useState(false);
 
   const navigate = useNavigate();
   const handleDestinationChange = (e: any) => {
@@ -94,6 +96,14 @@ const LandingPage = () => {
     setLoginModal(true);
   };
 
+  const showSignModal = () => {
+    setSignModal(true);
+  };
+
+  const hideSignModal = () => {
+    setSignModal(false);
+  };
+
   const handleSearch = () => {};
 
   React.useEffect(() => {
@@ -147,6 +157,10 @@ const LandingPage = () => {
     clearAll();
   };
 
+  const handleRegister = () => {
+    showSignModal();
+  };
+
   return (
     <>
       <div className="px-10 py-4 bg-blue-800 min-h-[50vh]">
@@ -156,7 +170,10 @@ const LandingPage = () => {
           </div>
           {!userData ? (
             <div className="">
-              <button className="border px-4 py-2 bg-white text-[#1e40af] rounded-lg">
+              <button
+                className="border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
+                onClick={handleRegister}
+              >
                 Register
               </button>
               <button
@@ -288,6 +305,8 @@ const LandingPage = () => {
         </div>
       </form>
       {loginModal && <LoginModal visible={loginModal} hidePopup={hidePopup} />}
+
+      { signModal && <SignUpModal signModal={signModal} hideSignModal={hideSignModal}/> }
 
       <div className="flex flex-wrap justify-center mt-5">
         {locationData.map((item: any, index: any) => {
