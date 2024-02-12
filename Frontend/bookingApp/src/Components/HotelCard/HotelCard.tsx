@@ -3,11 +3,16 @@ import { useNavigate } from "react-router-dom";
 
 const HotelCard = ({ data }: any) => {
   const navigate = useNavigate();
+  console.log(data, "data from Hotelcard");
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-4 my-2 ">
       <div className="md:col-span-4">
         <div className="">
-          <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGhvdGVsfGVufDB8fDB8fHww" />
+          {data.photos.length > 0 ? (
+            <img src={data.photos[0]} />
+          ) : (
+            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGhvdGVsfGVufDB8fDB8fHww" />
+          )}
         </div>
       </div>
       <div className="md:col-span-8">
@@ -24,7 +29,10 @@ const HotelCard = ({ data }: any) => {
             <button className="px-4 py-2 bg-green-400 rounded text-white">
               Free Airport Taxi
             </button>
-            <button className="px-4 py-2 bg-blue-400 rounded text-white" onClick={() => navigate(`/hoteldetail/${data._id}`)}>
+            <button
+              className="px-4 py-2 bg-blue-400 rounded text-white"
+              onClick={() => navigate(`/hoteldetail/${data._id}`)}
+            >
               See Availability
             </button>
           </div>

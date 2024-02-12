@@ -9,12 +9,15 @@ import { SearchContext } from "../../Context/SearchContext";
 import { convertNights, getUserDetails } from "../../Utils/ConvertNights";
 import { Dialog } from "primereact/dialog";
 import axios from "axios";
+import { clearAll, getToken } from "../../Utils/auth";
+import LoginModal from "../../Components/LoginModal/LoginModal";
 
 const HotelAvailability = () => {
   const [userData, setUserData] = React.useState<any>(null);
   const [visible, setVisible] = React.useState<boolean>(false);
   const [roomsDetails, setRoomDetails] = React.useState<any>([]);
   const [selectedRooms, setSelectedRooms] = React.useState<any>([]);
+  const [loginModal, setLoginModal] = React.useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const url = location.pathname.split("/") || [];
@@ -42,16 +45,29 @@ const HotelAvailability = () => {
   }, []);
 
   const handleBookRoom = async () => {
-    setVisible(true);
-    console.log(value.date);
-    try {
-      const res = await axios.get(
-        `http://localhost:8080/api/hotels/getRooms/${data._id}`
-      );
-      setRoomDetails(res.data);
-    } catch (error) {
-      console.log(error);
+    if (getToken()) {
+      setVisible(true);
+      console.log(value.date);
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/hotels/getRooms/${data._id}`
+        );
+        setRoomDetails(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setLoginModal(true);
     }
+  };
+
+  const hidePopup = () => {
+    console.log("im called!");
+    setLoginModal(false);
+  };
+
+  const showLoginPopup = () => {
+    setLoginModal(true);
   };
 
   const handleSelect = (e: any) => {
@@ -88,18 +104,21 @@ const HotelAvailability = () => {
   }
 
   const handleBooking = async () => {
-    console.log(value.date.flat(1), "value.date?");
-    try {
-      await Promise.all(
-        selectedRooms.map((roomId: any) => {
-          const res: any = axios.put(
-            `http://localhost:8080/api/rooms/availability/${roomId}`,
-            { dates: value.date.flat(1) }
-          );
-        })
-      );
-      navigate("/");
-    } catch (error) {}
+    if (getToken()) {
+      try {
+        await Promise.all(
+          selectedRooms.map((roomId: any) => {
+            const res: any = axios.put(
+              `http://localhost:8080/api/rooms/availability/${roomId}`,
+              { dates: value.date.flat(1) }
+            );
+          })
+        );
+        navigate("/");
+      } catch (error) {}
+    } else {
+      setLoginModal(true);
+    }
   };
 
   const isAvailable = (roomNumber: any) => {
@@ -107,13 +126,15 @@ const HotelAvailability = () => {
       return bookedDates.some((date: any) => {
         const isEqual =
           date.toDateString() === new Date(dateToCheck).toDateString();
-        console.log(isEqual, "finaltest");
         return isEqual; // Return the result of the comparison
       });
     });
-
-    console.log(isFoundDate, "isFoundDate");
     return !isFoundDate;
+  };
+
+  const handleLogout = () => {
+    clearAll();
+    navigate("/login");
   };
 
   return (
@@ -135,7 +156,7 @@ const HotelAvailability = () => {
               </button>
               <button
                 className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
-                onClick={() => navigate("/login")}
+                onClick={showLoginPopup}
               >
                 Login
               </button>
@@ -143,30 +164,30 @@ const HotelAvailability = () => {
           ) : (
             <button
               className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
-              onClick={() => navigate("/login")}
+              onClick={handleLogout}
             >
               Logout
             </button>
           )}
         </div>
         <div className=" mt-8 flex flex-wrap">
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2">
             <FaBed className="text-2xl text-white " />
             <h1 className="mx-2 text-xl text-white">Stays</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2">
             <RiFlightTakeoffLine className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Flights</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2">
             <FaCarRear className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Car rentals</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2">
             <FaBed className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Attractions</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2">
             <FaTaxi className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Airport Taxis</h1>
           </div>
@@ -200,6 +221,12 @@ const HotelAvailability = () => {
           <div className="">
             <h1 className="text-4xl font-bold ">{data?.name}</h1>
             <p className="mt-6">{data?.description}</p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {data?.photos?.map((item: any) => {
+                return <img src={item} />;
+              })}
+            </div>
           </div>
         </div>
         <div className="border md:col-span-3 rounded-2xl bg-blue-300">
@@ -277,6 +304,8 @@ const HotelAvailability = () => {
           </button>
         </Dialog>
       </div>
+
+      {loginModal && <LoginModal visible={loginModal} hidePopup={hidePopup} />}
     </>
   );
 };

@@ -4,7 +4,9 @@ import { FaCarRear } from "react-icons/fa6";
 import { RiFlightTakeoffLine } from "react-icons/ri";
 import { useLocation, useNavigate } from "react-router-dom";
 import HotelCard from "../../Components/HotelCard/HotelCard";
+import LoginModal from "../../Components/LoginModal/LoginModal";
 import useFetch from "../../Hooks/useFetch";
+import { clearAll } from "../../Utils/auth";
 import { getUserDetails } from "../../Utils/ConvertNights";
 
 const Hotel = () => {
@@ -12,6 +14,7 @@ const Hotel = () => {
   const [userData, setUserData] = React.useState<any>(null);
   const [min, setMin] = React.useState<any>(0);
   const [max, setMax] = React.useState<any>(15000);
+  const [loginModal, setLoginModal] = React.useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   React.useEffect(() => {
@@ -21,6 +24,22 @@ const Hotel = () => {
   const { data, loading, error, refetch }: any = useFetch(
     `http://localhost:8080/api/hotels/getBySearch?city=${destination}&min=${min}&max=${max}`
   );
+
+  const showLoginPopup = () => {
+    setLoginModal(true);
+  };
+
+  const handleLogin = () => {
+    showLoginPopup();
+  };
+
+  const handleLogout = () => {
+    clearAll();
+  };
+
+  const hidePopup = () => {
+    setLoginModal(false);
+  };
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -59,7 +78,7 @@ const Hotel = () => {
               </button>
               <button
                 className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
-                onClick={() => navigate("/login")}
+                onClick={handleLogin}
               >
                 Login
               </button>
@@ -67,7 +86,7 @@ const Hotel = () => {
           ) : (
             <button
               className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
-              onClick={() => navigate("/login")}
+              onClick={handleLogout}
             >
               Logout
             </button>
@@ -153,6 +172,10 @@ const Hotel = () => {
             Search
           </button>
         </div>
+        {loginModal && (
+          <LoginModal visible={loginModal} hidePopup={hidePopup} />
+        )}
+
         <div className="md:col-span-9 m-2 h-[68vh] overflow-y-scroll">
           {data &&
             data.map((item: any) => {

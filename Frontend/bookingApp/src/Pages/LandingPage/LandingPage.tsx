@@ -14,6 +14,8 @@ import { getUserDetails } from "../../Utils/ConvertNights";
 import { useForm, SubmitHandler } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import LoginModal from "../../Components/LoginModal/LoginModal";
+import { clearAll } from "../../Utils/auth";
 
 const schema: any = yup
   .object({
@@ -31,6 +33,8 @@ const LandingPage = () => {
   const [userData, setUserData] = React.useState<any>(null);
   const [dateError, setDateError] = React.useState("");
   const { value, updateValue }: any = React.useContext(SearchContext);
+  const [loginModal, setLoginModal] = React.useState(false);
+
   const navigate = useNavigate();
   const handleDestinationChange = (e: any) => {
     setDestination(e.target.value);
@@ -52,7 +56,6 @@ const LandingPage = () => {
     resolver: yupResolver(schema),
   });
 
-  console.log(date, "datefromlanding");
   const images = [
     "https://images.unsplash.com/photo-1617170220968-1ea3bceb3209?q=80&w=2067&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "https://images.unsplash.com/photo-1561784493-88b0a3ce0c76?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -62,7 +65,7 @@ const LandingPage = () => {
   const { data, loading, error }: any = useFetch(
     "http://localhost:8080/api/hotels/getByCity?cities=Chennai,Trichy,Coimbatore"
   );
-
+  console.log(loginModal, "loginModal");
   const locationData = [
     {
       name: "Chennai",
@@ -81,6 +84,14 @@ const LandingPage = () => {
   console.log("formErrors:::", errors);
   const handleOpenMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const hidePopup = () => {
+    setLoginModal(false);
+  };
+
+  const showLoginPopup = () => {
+    setLoginModal(true);
   };
 
   const handleSearch = () => {};
@@ -104,7 +115,6 @@ const LandingPage = () => {
   }, []);
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    console.log(data, "formData");
     if (date) {
       const searchData = {
         city: destination,
@@ -129,6 +139,14 @@ const LandingPage = () => {
     }
   };
 
+  const handleLogin = () => {
+    showLoginPopup();
+  };
+
+  const handleLogout = () => {
+    clearAll();
+  };
+
   return (
     <>
       <div className="px-10 py-4 bg-blue-800 min-h-[50vh]">
@@ -143,7 +161,7 @@ const LandingPage = () => {
               </button>
               <button
                 className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
-                onClick={() => navigate("/login")}
+                onClick={handleLogin}
               >
                 Login
               </button>
@@ -151,7 +169,7 @@ const LandingPage = () => {
           ) : (
             <button
               className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
-              onClick={() => navigate("/login")}
+              onClick={handleLogout}
             >
               Logout
             </button>
@@ -269,6 +287,8 @@ const LandingPage = () => {
           </button>
         </div>
       </form>
+      {loginModal && <LoginModal visible={loginModal} hidePopup={hidePopup} />}
+
       <div className="flex flex-wrap justify-center mt-5">
         {locationData.map((item: any, index: any) => {
           return (
