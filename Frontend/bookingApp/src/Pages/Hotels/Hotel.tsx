@@ -26,7 +26,9 @@ const Hotel = () => {
   }, [location]);
 
   const { data, loading, error, refetch }: any = useFetch(
-    `${import.meta.env.VITE_API_KEY}/api/hotels/getBySearch?city=${destination}&min=${min}&max=${max}`
+    `${
+      import.meta.env.VITE_API_KEY
+    }/api/hotels/getBySearch?city=${destination}&min=${min}&max=${max}`
   );
 
   const showLoginPopup = () => {
@@ -79,7 +81,7 @@ const Hotel = () => {
         <div className="flex justify-between">
           <div className="">
             <h1
-              className="text-white font-bold text-2xl"
+              className="text-white font-bold text-2xl cursor-pointer"
               onClick={() => navigate("/")}
             >
               lamaBooking
@@ -107,30 +109,30 @@ const Hotel = () => {
           )}
         </div>
         <div className=" mt-8 flex flex-wrap">
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 cursor-pointer">
             <FaBed className="text-2xl text-white " />
             <h1 className="mx-2 text-xl text-white">Stays</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 cursor-pointer">
             <RiFlightTakeoffLine className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Flights</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 cursor-pointer">
             <FaCarRear className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Car rentals</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 cursor-pointer">
             <FaBed className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Attractions</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 cursor-pointer">
             <FaTaxi className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Airport Taxis</h1>
           </div>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-        <div className="md:col-span-3 m-2 bg-red-200 pb-5 min-h-[68vh]">
+        <div className="md:col-span-3 m-2 bg-blue-300 pb-5 min-h-[68vh]">
           <div className=" rounded p-5 ">
             <h1 className="text-3xl font-bold ">Search</h1>
             <div className="flex flex-col mt-2">
@@ -180,7 +182,7 @@ const Hotel = () => {
             </div>
           </div>
           <button
-            className="w-[400px] mx-4 my-2 rounded  py-2 bg-red-600"
+            className="w-[400px] mx-4 my-2 rounded  py-2 bg-blue-500"
             onClick={refetch}
           >
             Search

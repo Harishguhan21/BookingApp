@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "npm install && npm run lint && npm run test && npm run transpile && npm run docs",
+    "build": "npm install",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js"
   },

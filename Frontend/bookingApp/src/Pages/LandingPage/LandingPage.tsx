@@ -179,7 +179,7 @@ const LandingPage = () => {
       <div className="px-10 py-4 bg-blue-800 min-h-[50vh]">
         <div className="flex justify-between">
           <div className="">
-            <h1 className="text-white font-bold text-2xl">lamaBooking</h1>
+            <h1 className="text-white font-bold text-2xl cursor-pointer">lamaBooking</h1>
           </div>
           {!isAuthenticated() ? (
             <div className="">
@@ -206,23 +206,23 @@ const LandingPage = () => {
           )}
         </div>
         <div className=" mt-8 flex flex-wrap">
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2 cursor-pointer">
             <FaBed className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Stays</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2 cursor-pointer">
             <RiFlightTakeoffLine className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Flights</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2 cursor-pointer">
             <FaCarRear className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Car rentals</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2 cursor-pointer">
             <FaBed className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Attractions</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 my-2 cursor-pointer">
             <FaTaxi className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Airport Taxis</h1>
           </div>
