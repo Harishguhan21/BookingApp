@@ -36,7 +36,7 @@ const SignUpModal = ({
   const onSubmit: SubmitHandler<FormData> = async (data: any) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/auth/register",
+        `${import.meta.env.VITE_API_KEY}/api/auth/register`,
         data
       );
 
@@ -44,7 +44,6 @@ const SignUpModal = ({
         hideSignModal();
         sucessNotify("User created successfully");
       }
-
     } catch (error: any) {
       console.log(error.response.data, "error");
       failureNotify(error.response.data);

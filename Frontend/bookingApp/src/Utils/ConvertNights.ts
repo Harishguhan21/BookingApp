@@ -19,7 +19,7 @@ export const getUserDetails: any = async () => {
   };
   try {
     const res = await axios.get(
-      "http://localhost:8080/api/auth/userDetails",
+      `${import.meta.env.VITE_API_KEY}/api/auth/userDetails`,
       config
     );
     return res.data;

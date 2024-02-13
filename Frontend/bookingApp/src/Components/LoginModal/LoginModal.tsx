@@ -32,7 +32,7 @@ const LoginModal = ({
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
       const response: any = await axios.post(
-        "http://localhost:8080/api/auth/login",
+        `${import.meta.env.VITE_API_KEY}/api/auth/login`,
         data
       );
       if (response.status === 200) {
@@ -44,19 +44,6 @@ const LoginModal = ({
       console.log(error, "error from api");
       failureNotify(error.response.data.message);
     }
-
-    // axios
-    //   .post("http://localhost:8080/api/auth/login", data)
-    //   .then((res: any) => {
-    //     if (res.status === 200) {
-    //       console.log(res, "res");
-    //       setToken(res.data.token);
-    //       hidePopup();
-    //     } else {
-    //       failureNotify(res.message);
-    //     }
-    //   })
-    //   .catch((err) => {});
   };
 
   return (

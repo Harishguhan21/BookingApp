@@ -29,7 +29,7 @@ const Login = () => {
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     axios
-      .post("http://localhost:8080/api/auth/login", data)
+      .post(`${import.meta.env.VITE_API_KEY}/api/auth/login`, data)
       .then((res: any) => {
         if (res.status === 200) {
           localStorage.setItem("token", JSON.stringify(res.data.token));

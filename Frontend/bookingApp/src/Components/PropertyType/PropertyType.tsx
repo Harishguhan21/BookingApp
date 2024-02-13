@@ -3,7 +3,7 @@ import useFetch from "../../Hooks/useFetch";
 
 const PropertyType = () => {
   const { data, loading, error }: any = useFetch(
-    "http://localhost:8080/api/hotels/getBytype"
+    `${import.meta.env.VITE_API_KEY}/api/hotels/getBytype`
   );
   console.log(data, "data");
   const images = [

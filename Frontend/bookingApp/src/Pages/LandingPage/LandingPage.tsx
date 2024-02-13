@@ -51,7 +51,6 @@ const LandingPage = () => {
   const handleDecrement = (setter: any) => {
     setter((prevCount: number) => (prevCount > 0 ? prevCount - 1 : 0));
   };
-
   const {
     register,
     handleSubmit,
@@ -67,7 +66,9 @@ const LandingPage = () => {
   ];
 
   const { data, loading, error }: any = useFetch(
-    "http://localhost:8080/api/hotels/getByCity?cities=Chennai,Trichy,Coimbatore"
+    `${
+      import.meta.env.VITE_API_KEY
+    }/api/hotels/getByCity?cities=Chennai,Trichy,Coimbatore`
   );
   console.log(loginModal, "loginModal");
   const locationData = [

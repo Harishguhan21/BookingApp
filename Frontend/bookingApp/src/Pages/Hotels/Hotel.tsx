@@ -26,7 +26,7 @@ const Hotel = () => {
   }, [location]);
 
   const { data, loading, error, refetch }: any = useFetch(
-    `http://localhost:8080/api/hotels/getBySearch?city=${destination}&min=${min}&max=${max}`
+    `${import.meta.env.VITE_API_KEY}/api/hotels/getBySearch?city=${destination}&min=${min}&max=${max}`
   );
 
   const showLoginPopup = () => {

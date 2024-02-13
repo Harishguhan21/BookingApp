@@ -27,7 +27,7 @@ const HotelAvailability = () => {
   const navigate = useNavigate();
   const url = location.pathname.split("/") || [];
   const { data, loading, error }: any = useFetch(
-    `http://localhost:8080/api/hotels/find/${url[2] || undefined}`
+    `${import.meta.env.VITE_API_KEY}/api/hotels/find/${url[2] || undefined}`
   );
   const { value, updateValue }: any = React.useContext(SearchContext);
 
@@ -55,7 +55,7 @@ const HotelAvailability = () => {
       console.log(value.date);
       try {
         const res = await axios.get(
-          `http://localhost:8080/api/hotels/getRooms/${data._id}`
+          `${import.meta.env.VITE_API_KEY}/api/hotels/getRooms/${data._id}`
         );
         setRoomDetails(res.data);
       } catch (error) {
@@ -114,7 +114,9 @@ const HotelAvailability = () => {
         await Promise.all(
           selectedRooms.map((roomId: any) => {
             const res: any = axios.put(
-              `http://localhost:8080/api/rooms/availability/${roomId}`,
+              `${
+                import.meta.env.VITE_API_KEY
+              }/api/rooms/availability/${roomId}`,
               { dates: value.date.flat(1) }
             );
           })
