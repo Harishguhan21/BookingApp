@@ -5,8 +5,10 @@ import { RiFlightTakeoffLine } from "react-icons/ri";
 import { useLocation, useNavigate } from "react-router-dom";
 import HotelCard from "../../Components/HotelCard/HotelCard";
 import LoginModal from "../../Components/LoginModal/LoginModal";
+import ConfirmLogoutModal from "../../Components/LogoutModal/LogoutModal";
+import { sucessNotify } from "../../Components/Toast/ToastMessage";
 import useFetch from "../../Hooks/useFetch";
-import { clearAll } from "../../Utils/auth";
+import { clearAll, isAuthenticated } from "../../Utils/auth";
 import { getUserDetails } from "../../Utils/ConvertNights";
 
 const Hotel = () => {
@@ -15,6 +17,7 @@ const Hotel = () => {
   const [min, setMin] = React.useState<any>(0);
   const [max, setMax] = React.useState<any>(15000);
   const [loginModal, setLoginModal] = React.useState(false);
+  const [logoutModal, setLogoutModal] = React.useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   React.useEffect(() => {
@@ -35,6 +38,8 @@ const Hotel = () => {
 
   const handleLogout = () => {
     clearAll();
+    setLogoutModal(false);
+    sucessNotify("Logout successfull!");
   };
 
   const hidePopup = () => {
@@ -59,6 +64,14 @@ const Hotel = () => {
     fetchData(); // Call the async function
   }, []);
 
+  const hideLogoutModal = () => {
+    setLogoutModal(false);
+  };
+
+  const showLogoutModal = () => {
+    setLogoutModal(true);
+  };
+
   return (
     <>
       <div className="px-10 py-4 bg-blue-800 min-h-[30vh]">
@@ -71,7 +84,7 @@ const Hotel = () => {
               lamaBooking
             </h1>
           </div>
-          {!userData ? (
+          {!isAuthenticated() ? (
             <div className="">
               <button className="border px-4 py-2 bg-white text-[#1e40af] rounded-lg">
                 Register
@@ -86,7 +99,7 @@ const Hotel = () => {
           ) : (
             <button
               className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
-              onClick={handleLogout}
+              onClick={showLogoutModal}
             >
               Logout
             </button>
@@ -174,6 +187,14 @@ const Hotel = () => {
         </div>
         {loginModal && (
           <LoginModal visible={loginModal} hidePopup={hidePopup} />
+        )}
+
+        {logoutModal && (
+          <ConfirmLogoutModal
+            visible={logoutModal}
+            handleLogout={handleLogout}
+            hidePopup={hideLogoutModal}
+          />
         )}
 
         <div className="md:col-span-9 m-2 h-[68vh] overflow-y-scroll">

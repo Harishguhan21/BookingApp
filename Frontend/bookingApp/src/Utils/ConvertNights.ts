@@ -13,8 +13,7 @@ export const convertNights = (date: any) => {
 };
 
 export const getUserDetails: any = async () => {
-  const storedUserString: any = localStorage.getItem("token");
-  const token: any = JSON.parse(storedUserString);
+  const token: any = localStorage.getItem("token");
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };

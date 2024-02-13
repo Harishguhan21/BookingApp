@@ -9,3 +9,12 @@ export const setToken = (token: any) => {
 export const getToken = () => {
   return localStorage.getItem("token");
 };
+
+export const isAuthenticated = () => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    return true;
+  } else {
+    return false;
+  }
+};

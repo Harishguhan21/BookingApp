@@ -9,8 +9,10 @@ import { SearchContext } from "../../Context/SearchContext";
 import { convertNights, getUserDetails } from "../../Utils/ConvertNights";
 import { Dialog } from "primereact/dialog";
 import axios from "axios";
-import { clearAll, getToken } from "../../Utils/auth";
+import { clearAll, getToken, isAuthenticated } from "../../Utils/auth";
 import LoginModal from "../../Components/LoginModal/LoginModal";
+import ConfirmLogoutModal from "../../Components/LogoutModal/LogoutModal";
+import { sucessNotify } from "../../Components/Toast/ToastMessage";
 
 const HotelAvailability = () => {
   const [userData, setUserData] = React.useState<any>(null);
@@ -18,6 +20,7 @@ const HotelAvailability = () => {
   const [roomsDetails, setRoomDetails] = React.useState<any>([]);
   const [selectedRooms, setSelectedRooms] = React.useState<any>([]);
   const [loginModal, setLoginModal] = React.useState(false);
+  const [logoutModal, setLogoutModal] = React.useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const url = location.pathname.split("/") || [];
@@ -134,7 +137,16 @@ const HotelAvailability = () => {
 
   const handleLogout = () => {
     clearAll();
-    navigate("/login");
+    setLogoutModal(false);
+    sucessNotify("Logout successfull!");
+  };
+
+  const hideLogoutModal = () => {
+    setLogoutModal(false);
+  };
+
+  const showLogoutModal = () => {
+    setLogoutModal(true);
   };
 
   return (
@@ -149,7 +161,7 @@ const HotelAvailability = () => {
               lamaBooking
             </h1>
           </div>
-          {!userData ? (
+          {!isAuthenticated() ? (
             <div className="">
               <button className="border px-4 py-2 bg-white text-[#1e40af] rounded-lg">
                 Register
@@ -164,7 +176,7 @@ const HotelAvailability = () => {
           ) : (
             <button
               className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
-              onClick={handleLogout}
+              onClick={showLogoutModal}
             >
               Logout
             </button>
@@ -304,8 +316,14 @@ const HotelAvailability = () => {
           </button>
         </Dialog>
       </div>
-
       {loginModal && <LoginModal visible={loginModal} hidePopup={hidePopup} />}
+      {logoutModal && (
+        <ConfirmLogoutModal
+          visible={logoutModal}
+          handleLogout={handleLogout}
+          hidePopup={hideLogoutModal}
+        />
+      )}
     </>
   );
 };

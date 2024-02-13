@@ -5,6 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios from "axios";
 import { setToken } from "../../Utils/auth";
+import { failureNotify, sucessNotify } from "../Toast/ToastMessage";
 
 const schema = yup
   .object({
@@ -29,15 +30,33 @@ const LoginModal = ({
   });
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    axios
-      .post("http://localhost:8080/api/auth/login", data)
-      .then((res: any) => {
-        if (res.status === 200) {
-          setToken(res.data.token);
-          hidePopup();
-        }
-      })
-      .catch((err) => console.log(err));
+    try {
+      const response: any = await axios.post(
+        "http://localhost:8080/api/auth/login",
+        data
+      );
+      if (response.status === 200) {
+        setToken(response.data.token);
+        hidePopup();
+        sucessNotify("Login Successfull!");
+      }
+    } catch (error: any) {
+      console.log(error, "error from api");
+      failureNotify(error.response.data.message);
+    }
+
+    // axios
+    //   .post("http://localhost:8080/api/auth/login", data)
+    //   .then((res: any) => {
+    //     if (res.status === 200) {
+    //       console.log(res, "res");
+    //       setToken(res.data.token);
+    //       hidePopup();
+    //     } else {
+    //       failureNotify(res.message);
+    //     }
+    //   })
+    //   .catch((err) => {});
   };
 
   return (
@@ -89,7 +108,7 @@ const LoginModal = ({
               </button>
             </form>
           </div>
-        </Dialog> 
+        </Dialog>
       </div>
     </>
   );

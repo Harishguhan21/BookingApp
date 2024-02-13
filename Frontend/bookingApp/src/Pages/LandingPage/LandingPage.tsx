@@ -15,8 +15,10 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import LoginModal from "../../Components/LoginModal/LoginModal";
-import { clearAll } from "../../Utils/auth";
+import { clearAll, isAuthenticated } from "../../Utils/auth";
 import SignUpModal from "../../Components/SignUpModal/SignUpModal";
+import ConfirmLogoutModal from "../../Components/LogoutModal/LogoutModal";
+import { sucessNotify } from "../../Components/Toast/ToastMessage";
 
 const schema: any = yup
   .object({
@@ -36,7 +38,7 @@ const LandingPage = () => {
   const { value, updateValue }: any = React.useContext(SearchContext);
   const [loginModal, setLoginModal] = React.useState(false);
   const [signModal, setSignModal] = React.useState(false);
-
+  const [logoutModal, setLogoutModal] = React.useState(false);
   const navigate = useNavigate();
   const handleDestinationChange = (e: any) => {
     setDestination(e.target.value);
@@ -108,21 +110,21 @@ const LandingPage = () => {
 
   React.useEffect(() => {
     const fetchData = async () => {
-      const storedUserString = localStorage.getItem("token");
-      if (storedUserString) {
-        const token = JSON.parse(storedUserString);
-        if (token) {
-          try {
-            const userDetails = await getUserDetails();
-            setUserData(userDetails);
-          } catch (error) {
-            console.error("Error fetching user details:", error);
-          }
+      const token = localStorage.getItem("token");
+      console.log(token, "storedUserString");
+      if (token) {
+        try {
+          const userDetails = await getUserDetails();
+          setUserData(userDetails);
+        } catch (error) {
+          console.error("Error fetching user details:", error);
         }
       }
     };
     fetchData(); // Call the async function
   }, []);
+
+  console.log(userData, "userData");
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     if (date) {
@@ -155,10 +157,20 @@ const LandingPage = () => {
 
   const handleLogout = () => {
     clearAll();
+    setLogoutModal(false);
+    sucessNotify("Logout successfull!");
   };
 
   const handleRegister = () => {
     showSignModal();
+  };
+
+  const hideLogoutModal = () => {
+    setLogoutModal(false);
+  };
+
+  const showLogoutModal = () => {
+    setLogoutModal(true);
   };
 
   return (
@@ -168,7 +180,7 @@ const LandingPage = () => {
           <div className="">
             <h1 className="text-white font-bold text-2xl">lamaBooking</h1>
           </div>
-          {!userData ? (
+          {!isAuthenticated() ? (
             <div className="">
               <button
                 className="border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
@@ -186,7 +198,7 @@ const LandingPage = () => {
           ) : (
             <button
               className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
-              onClick={handleLogout}
+              onClick={showLogoutModal}
             >
               Logout
             </button>
@@ -306,7 +318,17 @@ const LandingPage = () => {
       </form>
       {loginModal && <LoginModal visible={loginModal} hidePopup={hidePopup} />}
 
-      { signModal && <SignUpModal signModal={signModal} hideSignModal={hideSignModal}/> }
+      {signModal && (
+        <SignUpModal signModal={signModal} hideSignModal={hideSignModal} />
+      )}
+
+      {logoutModal && (
+        <ConfirmLogoutModal
+          visible={logoutModal}
+          handleLogout={handleLogout}
+          hidePopup={hideLogoutModal}
+        />
+      )}
 
       <div className="flex flex-wrap justify-center mt-5">
         {locationData.map((item: any, index: any) => {
