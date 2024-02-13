@@ -13,6 +13,8 @@ import { clearAll, getToken, isAuthenticated } from "../../Utils/auth";
 import LoginModal from "../../Components/LoginModal/LoginModal";
 import ConfirmLogoutModal from "../../Components/LogoutModal/LogoutModal";
 import { sucessNotify } from "../../Components/Toast/ToastMessage";
+import notFound from "../../assets/notFound.svg";
+import Footer from "../../Components/Footer/Footer";
 
 const HotelAvailability = () => {
   const [userData, setUserData] = React.useState<any>(null);
@@ -118,6 +120,7 @@ const HotelAvailability = () => {
           })
         );
         navigate("/");
+        sucessNotify("Your Room Booked successfully");
       } catch (error) {}
     } else {
       setLoginModal(true);
@@ -279,8 +282,11 @@ const HotelAvailability = () => {
           style={{ width: "50vw" }}
           breakpoints={{ "960px": "75vw", "641px": "100vw" }}
         >
-          <p className="m-0">Select Your Rooms: </p>
-          {roomsDetails &&
+          {roomsDetails.length > 0 && (
+            <p className="m-0">Select Your Rooms: </p>
+          )}
+
+          {roomsDetails.length > 0 ? (
             roomsDetails.map((item: any) => {
               return (
                 <div className="flex justify-between border m-4 p-5">
@@ -307,13 +313,25 @@ const HotelAvailability = () => {
                   </div>
                 </div>
               );
-            })}
-          <button
-            className="px-20 bg-blue-700 py-3 mx-auto flex justify-center items-center text-white font-bold rounded"
-            onClick={handleBooking}
-          >
-            Book Now
-          </button>
+            })
+          ) : (
+            <>
+              <div className="flex justify-center items-center">
+                <img src={notFound} className="w-20" />
+              </div>
+              <p className="text-center mt-5">
+                No Rooms Available in this Hotel
+              </p>
+            </>
+          )}
+          {roomsDetails.length > 0 && (
+            <button
+              className="px-20 bg-blue-700 py-3 mx-auto flex justify-center items-center text-white font-bold rounded"
+              onClick={handleBooking}
+            >
+              Book Now
+            </button>
+          )}
         </Dialog>
       </div>
       {loginModal && <LoginModal visible={loginModal} hidePopup={hidePopup} />}
@@ -324,6 +342,7 @@ const HotelAvailability = () => {
           hidePopup={hideLogoutModal}
         />
       )}
+      <Footer />
     </>
   );
 };

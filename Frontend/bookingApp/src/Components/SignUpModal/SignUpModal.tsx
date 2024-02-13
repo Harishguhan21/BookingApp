@@ -5,6 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios from "axios";
 import { setToken } from "../../Utils/auth";
+import { failureNotify, sucessNotify } from "../Toast/ToastMessage";
 
 const schema = yup
   .object({
@@ -33,17 +34,21 @@ const SignUpModal = ({
   });
 
   const onSubmit: SubmitHandler<FormData> = async (data: any) => {
-    console.log(data, "data");
-    axios
-      .post("http://localhost:8080/api/auth/register", data)
-      .then((res: any) => {
-        if (res.status === 201) {
-          // setToken(res.data.token);
-          // hidePopup();
-          hideSignModal();
-        }
-      })
-      .catch((err) => console.log(err));
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/register",
+        data
+      );
+
+      if (response.status === 201) {
+        hideSignModal();
+        sucessNotify("User created successfully");
+      }
+
+    } catch (error: any) {
+      console.log(error.response.data, "error");
+      failureNotify(error.response.data);
+    }
   };
 
   return (

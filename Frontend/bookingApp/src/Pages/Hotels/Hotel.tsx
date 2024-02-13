@@ -3,6 +3,7 @@ import { FaBed, FaTaxi } from "react-icons/fa";
 import { FaCarRear } from "react-icons/fa6";
 import { RiFlightTakeoffLine } from "react-icons/ri";
 import { useLocation, useNavigate } from "react-router-dom";
+import Footer from "../../Components/Footer/Footer";
 import HotelCard from "../../Components/HotelCard/HotelCard";
 import LoginModal from "../../Components/LoginModal/LoginModal";
 import ConfirmLogoutModal from "../../Components/LogoutModal/LogoutModal";
@@ -208,6 +209,7 @@ const Hotel = () => {
             })}
         </div>
       </div>
+      <Footer />
     </>
   );
 };
