@@ -63,13 +63,11 @@ const LandingPage = () => {
     "https://images.unsplash.com/photo-1595433306946-233f47e4af3a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y29pbWJhdG9yZXxlbnwwfHwwfHx8MA%3D%3D",
   ];
 
-  console.log( import.meta.env.VITE_API_KEY," import.meta.env.VITE_API_KEY")
   const { data }: any = useFetch(
     `${
       import.meta.env.VITE_API_KEY
     }/api/hotels/getByCity?cities=Chennai,Trichy,Coimbatore`
   );
-  console.log(loginModal, "loginModal");
   const locationData = [
     {
       name: "Chennai",
@@ -85,7 +83,6 @@ const LandingPage = () => {
     },
   ];
 
-  console.log("formErrors:::", errors);
   const handleOpenMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -107,26 +104,7 @@ const LandingPage = () => {
   };
 
   const handleSearch = () => {};
-
-  // React.useEffect(() => {
-  //   const fetchData = async () => {
-  //     const token = localStorage.getItem("token");
-  //     console.log(token, "storedUserString");
-  //     if (token) {
-  //       try {
-  //         const userDetails = await getUserDetails();
-  //         setUserData(userDetails);
-  //       } catch (error) {
-  //         console.error("Error fetching user details:", error);
-  //       }
-  //     }
-  //   };
-  //   fetchData(); // Call the async function
-  // }, []);
-  // console.log(userData, "userData");
-
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    console.log(data);
     if (date) {
       const searchData = {
         city: destination,
@@ -175,23 +153,23 @@ const LandingPage = () => {
 
   return (
     <>
-      <div className="px-10 py-4 bg-blue-800 min-h-[50vh]">
+      <div className="px-4 md:px-10 py-4 bg-blue-800 min-h-[50vh]">
         <div className="flex justify-between">
           <div className="">
-            <h1 className="text-white font-bold text-2xl cursor-pointer">
+            <h1 className="text-white font-bold md:text-2xl cursor-pointer">
               lamaBooking
             </h1>
           </div>
           {!isAuthenticated() ? (
             <div className="">
               <button
-                className="border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
+                className="border px-2 py-2 md:px-4 md:py-2 bg-white text-[#1e40af] rounded-lg"
                 onClick={handleRegister}
               >
                 Register
               </button>
               <button
-                className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
+                className="mx-2 border px-2 py-2 md:px-4 md:py-2 bg-white text-[#1e40af] rounded-lg"
                 onClick={handleLogin}
               >
                 Login

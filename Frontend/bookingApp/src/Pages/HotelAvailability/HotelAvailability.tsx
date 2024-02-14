@@ -29,29 +29,9 @@ const HotelAvailability = () => {
     `${import.meta.env.VITE_API_KEY}/api/hotels/find/${url[2] || undefined}`
   );
   const { value }: any = React.useContext(SearchContext);
-
-  // React.useEffect(() => {
-  //   const fetchData = async () => {
-  //     const storedUserString = localStorage.getItem("token");
-  //     if (storedUserString) {
-  //       const token = JSON.parse(storedUserString);
-  //       if (token) {
-  //         try {
-  //           const userDetails = await getUserDetails();
-  //           // setUserData(userDetails);
-  //         } catch (error) {
-  //           console.error("Error fetching user details:", error);
-  //         }
-  //       }
-  //     }
-  //   };
-  //   fetchData(); // Call the async function
-  // }, []);
-
   const handleBookRoom = async () => {
     if (getToken()) {
       setVisible(true);
-      console.log(value.date);
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_API_KEY}/api/hotels/getRooms/${data._id}`
@@ -66,7 +46,6 @@ const HotelAvailability = () => {
   };
 
   const hidePopup = () => {
-    console.log("im called!");
     setLoginModal(false);
   };
 
@@ -96,14 +75,12 @@ const HotelAvailability = () => {
   function getDatesInRange(date: any) {
     const start = new Date(date[0]);
     const end = new Date(date[1]);
-    console.log(start, "start", end);
     // const dateValue = new Date(start);
     const dates = [];
     while (start <= new Date(end)) {
       dates.push(new Date(start));
       start.setDate(start.getDate() + 1);
     }
-    console.log(dates, "rangeDates");
     return dates;
   }
 
@@ -118,7 +95,6 @@ const HotelAvailability = () => {
               }/api/rooms/availability/${roomId}`,
               { dates: value.date.flat(1) }
             );
-            console.log(res);
           })
         );
         navigate("/");
@@ -153,14 +129,13 @@ const HotelAvailability = () => {
   const showLogoutModal = () => {
     setLogoutModal(true);
   };
-
   return (
     <>
-      <div className="px-10 py-4 bg-blue-800 min-h-[30vh]">
+      <div className="px-4 py-4 bg-blue-800 min-h-[30vh]">
         <div className="flex justify-between">
           <div className="">
             <h1
-              className="text-white font-bold text-2xl cursor-pointer"
+              className="text-white font-bold md:text-2xl cursor-pointer"
               onClick={() => navigate("/")}
             >
               lamaBooking
@@ -168,11 +143,11 @@ const HotelAvailability = () => {
           </div>
           {!isAuthenticated() ? (
             <div className="">
-              <button className="border px-4 py-2 bg-white text-[#1e40af] rounded-lg">
+              <button className="border px-2 py-1 md:px-4 md:py-2 bg-white text-[#1e40af] rounded-lg">
                 Register
               </button>
               <button
-                className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
+                className="mx-2 border px-2 py-1 md:px-4 md:py-2 bg-white text-[#1e40af] rounded-lg"
                 onClick={showLoginPopup}
               >
                 Login

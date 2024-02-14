@@ -5,7 +5,6 @@ const PropertyType = () => {
   const { data }: any = useFetch(
     `${import.meta.env.VITE_API_KEY}/api/hotels/getBytype`
   );
-  console.log(data, "data");
   const images = [
     "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8aG90ZWx8ZW58MHx8MHx8fDA%3D",
     "https://images.unsplash.com/photo-1597047084993-bf337e09ede0?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8YXBhcnRtZW50c3xlbnwwfHwwfHx8MA%3D%3D",

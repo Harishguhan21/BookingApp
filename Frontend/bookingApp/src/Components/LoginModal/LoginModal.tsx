@@ -41,7 +41,6 @@ const LoginModal = ({
         sucessNotify("Login Successfull!");
       }
     } catch (error: any) {
-      console.log(error, "error from api");
       failureNotify(error.response.data.message);
     }
   };

@@ -44,7 +44,6 @@ const SignUpModal = ({
         sucessNotify("User created successfully");
       }
     } catch (error: any) {
-      console.log(error.response.data, "error");
       failureNotify(error.response.data);
     }
   };

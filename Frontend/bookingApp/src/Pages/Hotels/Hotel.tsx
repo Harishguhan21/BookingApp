@@ -76,11 +76,11 @@ const Hotel = () => {
 
   return (
     <>
-      <div className="px-10 py-4 bg-blue-800 min-h-[30vh]">
+      <div className="px-4 py-4 bg-blue-800 min-h-[30vh]">
         <div className="flex justify-between">
           <div className="">
             <h1
-              className="text-white font-bold text-2xl cursor-pointer"
+              className="text-white font-bold md:text-2xl cursor-pointer"
               onClick={() => navigate("/")}
             >
               lamaBooking
@@ -88,11 +88,11 @@ const Hotel = () => {
           </div>
           {!isAuthenticated() ? (
             <div className="">
-              <button className="border px-4 py-2 bg-white text-[#1e40af] rounded-lg">
+              <button className="border px-2 py-1 md:px-4 md:py-2 bg-white text-[#1e40af] rounded-lg">
                 Register
               </button>
               <button
-                className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
+                className="mx-2 border px-2 py-1 md:px-4 md:py-2 bg-white text-[#1e40af] rounded-lg"
                 onClick={handleLogin}
               >
                 Login
@@ -100,7 +100,7 @@ const Hotel = () => {
             </div>
           ) : (
             <button
-              className="mx-2 border px-4 py-2 bg-white text-[#1e40af] rounded-lg"
+              className="mx-2 border md:px-4 md:py-2 bg-white text-[#1e40af] rounded-lg"
               onClick={showLogoutModal}
             >
               Logout
@@ -108,23 +108,23 @@ const Hotel = () => {
           )}
         </div>
         <div className=" mt-8 flex flex-wrap">
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 cursor-pointer">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 cursor-pointer my-2">
             <FaBed className="text-2xl text-white " />
             <h1 className="mx-2 text-xl text-white">Stays</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 cursor-pointer">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 cursor-pointer my-2">
             <RiFlightTakeoffLine className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Flights</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 cursor-pointer">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 cursor-pointer my-2">
             <FaCarRear className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Car rentals</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 cursor-pointer">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 cursor-pointer my-2">
             <FaBed className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Attractions</h1>
           </div>
-          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 cursor-pointer">
+          <div className="flex items-center border py-2 rounded-xl px-2 mx-8 cursor-pointer my-2">
             <FaTaxi className="text-2xl text-white" />
             <h1 className="mx-2 text-xl text-white">Airport Taxis</h1>
           </div>
@@ -181,7 +181,7 @@ const Hotel = () => {
             </div>
           </div>
           <button
-            className="w-[400px] mx-4 my-2 rounded  py-2 bg-blue-500"
+            className="w-[80%] ml-[10%] my-2 rounded py-2 bg-blue-500"
             onClick={refetch}
           >
             Search
