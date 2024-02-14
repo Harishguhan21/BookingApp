@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FaLocationDot } from "react-icons/fa6";
 import useFetch from "../../Hooks/useFetch";
 import { SearchContext } from "../../Context/SearchContext";
-import { convertNights, getUserDetails } from "../../Utils/ConvertNights";
+import { convertNights } from "../../Utils/ConvertNights";
 import { Dialog } from "primereact/dialog";
 import axios from "axios";
 import { clearAll, getToken, isAuthenticated } from "../../Utils/auth";
@@ -17,7 +17,6 @@ import notFound from "../../assets/notFound.svg";
 import Footer from "../../Components/Footer/Footer";
 
 const HotelAvailability = () => {
-  const [userData, setUserData] = React.useState<any>(null);
   const [visible, setVisible] = React.useState<boolean>(false);
   const [roomsDetails, setRoomDetails] = React.useState<any>([]);
   const [selectedRooms, setSelectedRooms] = React.useState<any>([]);
@@ -26,28 +25,28 @@ const HotelAvailability = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const url = location.pathname.split("/") || [];
-  const { data, loading, error }: any = useFetch(
+  const { data }: any = useFetch(
     `${import.meta.env.VITE_API_KEY}/api/hotels/find/${url[2] || undefined}`
   );
-  const { value, updateValue }: any = React.useContext(SearchContext);
+  const { value }: any = React.useContext(SearchContext);
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      const storedUserString = localStorage.getItem("token");
-      if (storedUserString) {
-        const token = JSON.parse(storedUserString);
-        if (token) {
-          try {
-            const userDetails = await getUserDetails();
-            setUserData(userDetails);
-          } catch (error) {
-            console.error("Error fetching user details:", error);
-          }
-        }
-      }
-    };
-    fetchData(); // Call the async function
-  }, []);
+  // React.useEffect(() => {
+  //   const fetchData = async () => {
+  //     const storedUserString = localStorage.getItem("token");
+  //     if (storedUserString) {
+  //       const token = JSON.parse(storedUserString);
+  //       if (token) {
+  //         try {
+  //           const userDetails = await getUserDetails();
+  //           // setUserData(userDetails);
+  //         } catch (error) {
+  //           console.error("Error fetching user details:", error);
+  //         }
+  //       }
+  //     }
+  //   };
+  //   fetchData(); // Call the async function
+  // }, []);
 
   const handleBookRoom = async () => {
     if (getToken()) {
@@ -119,6 +118,7 @@ const HotelAvailability = () => {
               }/api/rooms/availability/${roomId}`,
               { dates: value.date.flat(1) }
             );
+            console.log(res);
           })
         );
         navigate("/");

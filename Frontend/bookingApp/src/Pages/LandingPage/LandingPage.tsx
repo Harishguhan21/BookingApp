@@ -10,7 +10,6 @@ import PropertyType from "../../Components/PropertyType/PropertyType";
 import Footer from "../../Components/Footer/Footer";
 import OptionSelector from "../../Components/OptionSelector/OptionSelector";
 import { SearchContext } from "../../Context/SearchContext";
-import { getUserDetails } from "../../Utils/ConvertNights";
 import { useForm, SubmitHandler } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -33,9 +32,8 @@ const LandingPage = () => {
   const [children, setChildren] = React.useState<number>(0);
   const [rooms, setRooms] = React.useState<number>(0);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const [userData, setUserData] = React.useState<any>(null);
   const [dateError, setDateError] = React.useState("");
-  const { value, updateValue }: any = React.useContext(SearchContext);
+  const { updateValue }: any = React.useContext(SearchContext);
   const [loginModal, setLoginModal] = React.useState(false);
   const [signModal, setSignModal] = React.useState(false);
   const [logoutModal, setLogoutModal] = React.useState(false);
@@ -65,7 +63,7 @@ const LandingPage = () => {
     "https://images.unsplash.com/photo-1595433306946-233f47e4af3a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y29pbWJhdG9yZXxlbnwwfHwwfHx8MA%3D%3D",
   ];
 
-  const { data, loading, error }: any = useFetch(
+  const { data }: any = useFetch(
     `${
       import.meta.env.VITE_API_KEY
     }/api/hotels/getByCity?cities=Chennai,Trichy,Coimbatore`
@@ -109,25 +107,25 @@ const LandingPage = () => {
 
   const handleSearch = () => {};
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      console.log(token, "storedUserString");
-      if (token) {
-        try {
-          const userDetails = await getUserDetails();
-          setUserData(userDetails);
-        } catch (error) {
-          console.error("Error fetching user details:", error);
-        }
-      }
-    };
-    fetchData(); // Call the async function
-  }, []);
-
-  console.log(userData, "userData");
+  // React.useEffect(() => {
+  //   const fetchData = async () => {
+  //     const token = localStorage.getItem("token");
+  //     console.log(token, "storedUserString");
+  //     if (token) {
+  //       try {
+  //         const userDetails = await getUserDetails();
+  //         setUserData(userDetails);
+  //       } catch (error) {
+  //         console.error("Error fetching user details:", error);
+  //       }
+  //     }
+  //   };
+  //   fetchData(); // Call the async function
+  // }, []);
+  // console.log(userData, "userData");
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
+    console.log(data);
     if (date) {
       const searchData = {
         city: destination,
@@ -179,7 +177,9 @@ const LandingPage = () => {
       <div className="px-10 py-4 bg-blue-800 min-h-[50vh]">
         <div className="flex justify-between">
           <div className="">
-            <h1 className="text-white font-bold text-2xl cursor-pointer">lamaBooking</h1>
+            <h1 className="text-white font-bold text-2xl cursor-pointer">
+              lamaBooking
+            </h1>
           </div>
           {!isAuthenticated() ? (
             <div className="">

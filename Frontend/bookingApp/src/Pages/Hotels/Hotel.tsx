@@ -10,11 +10,10 @@ import ConfirmLogoutModal from "../../Components/LogoutModal/LogoutModal";
 import { sucessNotify } from "../../Components/Toast/ToastMessage";
 import useFetch from "../../Hooks/useFetch";
 import { clearAll, isAuthenticated } from "../../Utils/auth";
-import { getUserDetails } from "../../Utils/ConvertNights";
 
 const Hotel = () => {
   const [destination, setDestination] = React.useState<any>("");
-  const [userData, setUserData] = React.useState<any>(null);
+  // const [userData, setUserData] = React.useState<any>(null);
   const [min, setMin] = React.useState<any>(0);
   const [max, setMax] = React.useState<any>(15000);
   const [loginModal, setLoginModal] = React.useState(false);
@@ -25,7 +24,7 @@ const Hotel = () => {
     setDestination(location.state?.searchQuery?.destination);
   }, [location]);
 
-  const { data, loading, error, refetch }: any = useFetch(
+  const { data, refetch }: any = useFetch(
     `${
       import.meta.env.VITE_API_KEY
     }/api/hotels/getBySearch?city=${destination}&min=${min}&max=${max}`
@@ -49,23 +48,23 @@ const Hotel = () => {
     setLoginModal(false);
   };
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      const storedUserString = localStorage.getItem("token");
-      if (storedUserString) {
-        const token = JSON.parse(storedUserString);
-        if (token) {
-          try {
-            const userDetails = await getUserDetails();
-            setUserData(userDetails);
-          } catch (error) {
-            console.error("Error fetching user details:", error);
-          }
-        }
-      }
-    };
-    fetchData(); // Call the async function
-  }, []);
+  // React.useEffect(() => {
+  //   const fetchData = async () => {
+  //     const storedUserString = localStorage.getItem("token");
+  //     if (storedUserString) {
+  //       const token = JSON.parse(storedUserString);
+  //       if (token) {
+  //         try {
+  //           const userDetails = await getUserDetails();
+  //           setUserData(userDetails);
+  //         } catch (error) {
+  //           console.error("Error fetching user details:", error);
+  //         }
+  //       }
+  //     }
+  //   };
+  //   fetchData(); // Call the async function
+  // }, []);
 
   const hideLogoutModal = () => {
     setLogoutModal(false);

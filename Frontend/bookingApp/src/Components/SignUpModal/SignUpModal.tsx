@@ -4,7 +4,6 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios from "axios";
-import { setToken } from "../../Utils/auth";
 import { failureNotify, sucessNotify } from "../Toast/ToastMessage";
 
 const schema = yup

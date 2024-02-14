@@ -2,7 +2,7 @@ import * as React from "react";
 import useFetch from "../../Hooks/useFetch";
 
 const PropertyType = () => {
-  const { data, loading, error }: any = useFetch(
+  const { data }: any = useFetch(
     `${import.meta.env.VITE_API_KEY}/api/hotels/getBytype`
   );
   console.log(data, "data");

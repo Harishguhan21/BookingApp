@@ -1,6 +1,5 @@
 import "./App.css";
 import * as React from "react";
-import useFetch from "./Hooks/useFetch";
 import {
   createBrowserRouter,
   createRoutesFromElements,
