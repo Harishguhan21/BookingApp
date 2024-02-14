@@ -3,7 +3,10 @@ import cors from "cors";
 
 const setHeaders = (req, res, next) => {
   // Set common headers here
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://com-booking-app.onrender.com"
+  ); // Set the allowed origin
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS, PUT, PATCH, DELETE"

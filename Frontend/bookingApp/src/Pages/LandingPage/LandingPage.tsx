@@ -331,7 +331,7 @@ const LandingPage = () => {
         />
       )}
 
-      <div className="flex flex-wrap justify-center mt-5">
+      <div className="flex flex-wrap justify-center mt-28 md:mt-5">
         {locationData.map((item: any, index: any) => {
           return (
             <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 p-4">
