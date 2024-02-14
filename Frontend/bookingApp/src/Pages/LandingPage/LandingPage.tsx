@@ -63,6 +63,7 @@ const LandingPage = () => {
     "https://images.unsplash.com/photo-1595433306946-233f47e4af3a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y29pbWJhdG9yZXxlbnwwfHwwfHx8MA%3D%3D",
   ];
 
+  console.log( import.meta.env.VITE_API_KEY," import.meta.env.VITE_API_KEY")
   const { data }: any = useFetch(
     `${
       import.meta.env.VITE_API_KEY
