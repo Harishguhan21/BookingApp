@@ -5,9 +5,8 @@ const setHeaders = (req, res, next) => {
   // Set common headers here
   res.setHeader(
     "Access-Control-Allow-Origin",
-    "https://com-booking-app.onrender.com",
-    "http://localhost:5173"
-  ); // Set the allowed origin
+    "*" // Allow all origins
+  );
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS, PUT, PATCH, DELETE"
